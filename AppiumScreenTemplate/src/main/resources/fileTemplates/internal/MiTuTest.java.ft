@@ -1,32 +1,25 @@
 package com.dt.tests;
 
-import com.dt.tests.base.BaseTest;
 import com.aventstack.extentreports.ExtentTest;
 import com.dt.screens.${SCREEN_CLASS};
-import com.dt.utils.Utils;
+import com.dt.tests.base.BaseTest;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 public class ${CLASS_NAME} extends BaseTest {
 
     ${SCREEN_CLASS} ${VARIABLE_NAME};
 
-    @BeforeClass
-    public void beforeClass() {}
-
-    @BeforeMethod
-    public void beforeMethod() {}
-
-    @BeforeTest
+    @BeforeClass(alwaysRun = true)
     public void beforeTest() {
         ${VARIABLE_NAME} = new ${SCREEN_CLASS}(driver);
     }
 
+    // TODO: Update this function
     @Test
     public void handle() {
-        ExtentTest ${BASE_NAME_LOWER}Report = extentReport.getExtentTest("${BASE_NAME} Screen")
+        ExtentTest ${BASE_NAME_LOWER}Report = extentReport
+                .getExtentTest("${BASE_NAME} Screen")
                 .info("any action");
     }
 }

@@ -11,10 +11,7 @@ public class ${CLASS_NAME} extends BaseScreen {
         super(driver);
     }
 
-    /***
-    * Update the resource-id below if the target element changes.
-    * Example: replace "welcomeGetStartedButton" with the correct element id from the app.
-    */
+    // TODO: Update the resource-id below if the target element changes.
     @AndroidFindBy(uiAutomator = "new UiSelector().resourceId(\"replaceWithButtonId\")")
     public WebElement anyButton;
 
