@@ -1,0 +1,1 @@
+rootProject.name = "mitu_appium_template"
