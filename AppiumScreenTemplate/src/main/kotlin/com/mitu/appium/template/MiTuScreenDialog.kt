@@ -11,7 +11,8 @@ import javax.swing.*
 class MiTuScreenDialog(
     project: Project,
     private val screenTargetDir: PsiDirectory,
-    private val testTargetDirProvider: () -> PsiDirectory?,
+    /** READ-ONLY finder: must NOT create folders */
+    private val testRootFinder: () -> PsiDirectory?,
     private val testPackagePath: String = "com/dt/tests",
 ) : DialogWrapper(project, true) {
 
@@ -49,58 +50,47 @@ class MiTuScreenDialog(
     }
 
     /**
-     * IMPORTANT:
-     * - doValidate() just returns ValidationInfo (no UI side-effects).
-     * - doOKAction() is responsible for showing error text inside the dialog when user clicks OK.
+     * READ-ONLY validation. DO NOT create directories here.
      */
     override fun doValidate(): ValidationInfo? {
         val raw = getRawName()
-        if (raw.isBlank()) {
-            return ValidationInfo("Please enter a screen name.", nameField)
-        }
-        if (raw.length > 80) {
-            return ValidationInfo("Screen name is too long (max 80 characters).", nameField)
-        }
+        if (raw.isBlank()) return ValidationInfo("Please enter a screen name.", nameField)
+        if (raw.length > 80) return ValidationInfo("Screen name is too long (max 80 characters).", nameField)
 
         val baseName = normalizeToPascalCase(raw)
         if (baseName.isBlank()) {
             return ValidationInfo("Screen name is invalid. Please use letters/numbers/spaces/underscore.", nameField)
         }
 
-        // Validate a safe Java class identifier without relying on Java PSI (more robust for build/runIde).
-        val identifierError = validateJavaLikeIdentifier(baseName)
-        if (identifierError != null) {
-            return ValidationInfo(identifierError, nameField)
-        }
+        val idError = validateJavaLikeIdentifier(baseName)
+        if (idError != null) return ValidationInfo(idError, nameField)
 
-        // Screen file
-        val screenClassName = "${baseName}Screen"
-        val screenFileName = "$screenClassName.java"
+        // Screen file check (read-only)
+        val screenFileName = "${baseName}Screen.java"
         if (screenTargetDir.findFile(screenFileName) != null) {
             return ValidationInfo("Tên trùng rồi, hãy tạo tên khác. ($screenFileName)", nameField)
         }
 
-        // Optional test file
+        // Test check (read-only) - DO NOT create package dirs
         if (createTestCheck.isSelected) {
-            val testRoot = testTargetDirProvider.invoke()
-                ?: return ValidationInfo("Cannot find/create test source root (src/test/java).", createTestCheck)
+            val testRoot = testRootFinder.invoke()
+                ?: return ValidationInfo("Cannot find test source root (src/test/java). It will be created when generating.", createTestCheck)
 
-            val testPackageDir = ensurePackageDir(testRoot, testPackagePath)
-
-            val testClassName = "${baseName}Test"
-            val testFileName = "$testClassName.java"
-            if (testPackageDir.findFile(testFileName) != null) {
-                return ValidationInfo("Tên trùng rồi, hãy tạo tên khác. ($testPackagePath/$testFileName)", createTestCheck)
+            val pkgDir = findPackageDir(testRoot, testPackagePath) // read-only
+            if (pkgDir != null) {
+                val testFileName = "${baseName}Test.java"
+                if (pkgDir.findFile(testFileName) != null) {
+                    return ValidationInfo("Tên trùng rồi, hãy tạo tên khác. ($testPackagePath/$testFileName)", createTestCheck)
+                }
             }
+            // Nếu package chưa tồn tại: không coi là lỗi, vì action sẽ tạo khi generate.
         }
 
         return null
     }
 
     /**
-     * Only show errors when user clicks OK.
-     * - If invalid: show error text inside dialog and keep dialog open.
-     * - If valid: clear error and close.
+     * Show error INSIDE dialog only when user clicks OK.
      */
     override fun doOKAction() {
         val info = doValidate()
@@ -115,16 +105,6 @@ class MiTuScreenDialog(
     fun getRawName(): String = nameField.text?.trim().orEmpty()
     fun shouldCreateTest(): Boolean = createTestCheck.isSelected
 
-    /**
-     * Convert raw input to PascalCase base name.
-     * Examples:
-     *  - "home" -> "Home"
-     *  - "order detail" -> "OrderDetail"
-     *  - "order_detail" -> "OrderDetail"
-     *  - "  onboarding  screen " -> "OnboardingScreen"
-     *
-     * Keeps only letters/digits/space/underscore/hyphen.
-     */
     fun normalizeToPascalCase(raw: String): String {
         val cleaned = raw.trim()
             .replace(Regex("[^\\p{L}\\p{N}_\\-\\s]"), " ")
@@ -140,40 +120,30 @@ class MiTuScreenDialog(
             token.lowercase().replaceFirstChar { c -> c.titlecase() }
         }
 
-        // Class cannot start with digit → prefix S
         return if (joined.isNotEmpty() && joined.first().isDigit()) "S$joined" else joined
     }
 
-    /**
-     * Minimal-but-strong validation for Java-style class names:
-     * - Must start with letter or underscore
-     * - Must contain only letters/digits/underscore
-     * - Avoid common Java keywords
-     */
     private fun validateJavaLikeIdentifier(name: String): String? {
-        // Basic identifier check
-        val ok = Regex("^[A-Za-z_][A-Za-z0-9_]*$").matches(name)
-        if (!ok) return "Invalid class name: '$name'. Use only letters, digits, and underscore."
+        if (!Regex("^[A-Za-z_][A-Za-z0-9_]*$").matches(name)) {
+            return "Invalid class name: '$name'. Use only letters, digits, and underscore."
+        }
 
-        // Common Java keywords (enough for real-world guard)
         val keywords = setOf(
             "abstract","assert","boolean","break","byte","case","catch","char","class","const","continue",
             "default","do","double","else","enum","extends","final","finally","float","for","goto","if",
             "implements","import","instanceof","int","interface","long","native","new","package","private",
             "protected","public","return","short","static","strictfp","super","switch","synchronized","this",
             "throw","throws","transient","try","void","volatile","while",
-            // literals / reserved in newer Java
             "true","false","null","var","record","yield","sealed","permits","non-sealed"
         )
-        if (keywords.contains(name)) return "Class name cannot be a Java keyword: '$name'."
-
-        return null
+        return if (keywords.contains(name)) "Class name cannot be a Java keyword: '$name'." else null
     }
 
-    private fun ensurePackageDir(base: PsiDirectory, pkg: String): PsiDirectory {
-        var current = base
-        pkg.split("/").filter { it.isNotBlank() }.forEach { part ->
-            current = current.findSubdirectory(part) ?: current.createSubdirectory(part)
+    /** READ-ONLY: return null if package path doesn't exist */
+    private fun findPackageDir(base: PsiDirectory, pkg: String): PsiDirectory? {
+        var current: PsiDirectory? = base
+        for (part in pkg.split("/").filter { it.isNotBlank() }) {
+            current = current?.findSubdirectory(part) ?: return null
         }
         return current
     }

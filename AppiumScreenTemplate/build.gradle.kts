@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.mitu.appium"
-version = "1.0.0"
+version = "1.0.1"
 
 repositories {
     mavenCentral()
@@ -43,7 +43,7 @@ By entering a screen name, the plugin automatically creates corresponding screen
         """.trimIndent()
 
         changeNotes = """
-            Initial version
+                <li>Add warning when a screen or test file with the same name already exists.</li> 
         """.trimIndent()
     }
 }
