@@ -49,8 +49,6 @@ class MiTuScreenAction : AnAction() {
         val testClassName = "${baseName}Test"
         val testFileName = "$testClassName.java"
 
-        val reportClassName = "${baseName}Report"
-
         // Defensive check before write
         if (dir.findFile(screenFileName) != null) {
             Messages.showErrorDialog(project, "Tên trùng rồi, hãy tạo tên khác. ($screenFileName)", "MiTu Appium Templates")
@@ -76,7 +74,6 @@ class MiTuScreenAction : AnAction() {
                         put("VARIABLE_NAME", lowerFirstChar(screenClassName))
                         put("BASE_NAME", baseName)
                         put("BASE_NAME_LOWER", lowerFirstChar(baseName))
-                        put("REPORT_VARIABLE_NAME", reportClassName)
                     }
 
                     val testRoot = getOrCreateTestJavaRoot(project)
