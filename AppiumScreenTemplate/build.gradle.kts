@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.mitu.appium"
-version = "1.0.3"
+version = "1.0.4"
 
 repositories {
     mavenCentral()
@@ -14,8 +14,6 @@ repositories {
     }
 }
 
-// Configure IntelliJ Platform Gradle Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
 dependencies {
     intellijPlatform {
         create("IC", "2025.1.4.1")

@@ -16,4 +16,5 @@ public class ${CLASS_NAME} extends BaseScreen {
     public WebElement anyButton;
 
 
+    public boolean isDisplayed() { return anyButton.isDisplayed(); }
 }

@@ -9,17 +9,15 @@ import org.testng.annotations.Test;
 public class ${CLASS_NAME} extends BaseTest {
 
     ${SCREEN_CLASS} ${VARIABLE_NAME};
+    ExtentTest ${BASE_NAME_LOWER}Report;
 
     @BeforeClass(alwaysRun = true)
-    public void beforeTest() {
-        ${VARIABLE_NAME} = new ${SCREEN_CLASS}(driver);
+    public void initTest() {
+            ${VARIABLE_NAME} = new ${SCREEN_CLASS}(driver);
+            ${BASE_NAME_LOWER}Report = new extentReport.getExtentTest("${BASE_NAME} Screen");
     }
 
-    // TODO: Update this function
     @Test
     public void handle() {
-        ExtentTest ${BASE_NAME_LOWER}Report = extentReport
-                .getExtentTest("${BASE_NAME} Screen")
-                .info("any action");
     }
 }
