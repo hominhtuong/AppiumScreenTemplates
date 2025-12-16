@@ -39,6 +39,10 @@ class MiTuScreenAction : AnAction() {
 
         if (!dialog.showAndGet()) return
 
+        val author = System.getProperty("user.name") ?: "user"
+        val createdAt = java.time.LocalDateTime.now()
+            .format(java.time.format.DateTimeFormatter.ofPattern("dd MMM, yyyy"))
+
         val raw = dialog.getRawName()
         val baseName = dialog.normalizeToPascalCase(raw)
         val createTest = dialog.shouldCreateTest()
@@ -61,6 +65,8 @@ class MiTuScreenAction : AnAction() {
                 val screenTemplate = FileTemplateManager.getInstance(project).getInternalTemplate("MiTuScreen")
                 val screenProps = Properties().apply {
                     put("CLASS_NAME", screenClassName)
+                    put("AUTHOR", author)
+                    put("CREATED", createdAt)
                 }
                 FileTemplateUtil.createFromTemplate(screenTemplate, screenFileName, screenProps, dir)
 
@@ -74,6 +80,8 @@ class MiTuScreenAction : AnAction() {
                         put("VARIABLE_NAME", lowerFirstChar(screenClassName))
                         put("BASE_NAME", baseName)
                         put("BASE_NAME_LOWER", lowerFirstChar(baseName))
+                        put("AUTHOR", author)
+                        put("CREATED", createdAt)
                     }
 
                     val testRoot = getOrCreateTestJavaRoot(project)

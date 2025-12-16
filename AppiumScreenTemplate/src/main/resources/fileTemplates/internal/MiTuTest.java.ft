@@ -6,6 +6,10 @@ import com.dt.tests.base.BaseTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+/**
+ * Created by ${AUTHOR} on ${CREATED}
+ */
+
 public class ${CLASS_NAME} extends BaseTest {
 
     ${SCREEN_CLASS} ${VARIABLE_NAME};
@@ -14,7 +18,7 @@ public class ${CLASS_NAME} extends BaseTest {
     @BeforeClass(alwaysRun = true)
     public void initTest() {
             ${VARIABLE_NAME} = new ${SCREEN_CLASS}(driver);
-            ${BASE_NAME_LOWER}Report = new extentReport.getExtentTest("${BASE_NAME} Screen");
+            ${BASE_NAME_LOWER}Report = extentReport.getExtentTest("${BASE_NAME} Screen");
     }
 
     @Test
