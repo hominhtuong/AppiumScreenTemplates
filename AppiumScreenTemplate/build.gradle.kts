@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.mitu.appium"
-version = "1.0.5"
+version = "1.2.0"
 
 repositories {
     mavenCentral()
@@ -41,7 +41,7 @@ By entering a screen name, the plugin automatically creates corresponding screen
         """.trimIndent()
 
         changeNotes = """
-                <li>Add warning when a screen or test file with the same name already exists.</li> 
+                <li>Add iOSXCUITFindBy</li> 
         """.trimIndent()
     }
 }
