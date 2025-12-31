@@ -43,7 +43,10 @@ class MiTuScreenDialog(
 
         form.add(row)
         form.add(Box.createVerticalStrut(8))
-        form.add(createTestCheck)
+
+        val checkRow = JPanel(BorderLayout(8, 0))
+        checkRow.add(createTestCheck, BorderLayout.WEST)
+        form.add(checkRow)
 
         panel.add(form, BorderLayout.CENTER)
         return panel
