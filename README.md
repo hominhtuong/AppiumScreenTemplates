@@ -1,14 +1,13 @@
-# AppiumScreenTemplates
+# Appium Screen Templates
 
 [![Version](https://img.shields.io/jetbrains/plugin/v/29362.svg)](https://plugins.jetbrains.com/plugin/25300)
-[![Rating](https://img.shields.io/jetbrains/plugin/r/rating/29362.svg)](https://plugins.jetbrains.com/plugin/25300)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/29362.svg)](https://plugins.jetbrains.com/plugin/25300)
 
 ---
 
 ## 🚀 Overview
 
-**AppiumScreenTemplates** is an IntelliJ IDEA plugin that helps Appium automation engineers quickly generate **Screen (Page Object)** and **Test** classes based on predefined templates.
+**Appium Screen Templates** is an IntelliJ IDEA plugin that helps Appium automation engineers quickly generate **Screen (Page Object)** and **Test** classes based on predefined templates.
 
 By simply entering a screen name, the plugin automatically creates the corresponding Java files with a consistent structure, saving time and avoiding repetitive boilerplate code.
 
@@ -63,6 +62,13 @@ If a file with the same name already exists, the plugin will show a warning **in
 ---
 
 ## 🆕 Changelog
+
+### 2.0.0
+- The plugin uses a unified `@MobileFindBy` annotation for both Android and iOS:
+```java
+@MobileFindBy(id = "backButton")
+public WebElement backButton;
+```
 
 ### 1.0.1
 - Add warning when creating Screen or Test files with duplicate names

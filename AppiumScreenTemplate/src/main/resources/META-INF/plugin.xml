@@ -33,7 +33,7 @@
                 class="com.mitu.appium.template.MiTuScreenAction"
                 text="New Screen Class"
                 description="Create Appium Screen and optional Test class"
-                icon="/icons/child_monkey.png">
+                icon="/icons/child_monkey.svg">
 
             <add-to-group group-id="NewGroup" anchor="first"/>
 
