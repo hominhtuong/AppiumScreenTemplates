@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.mitu.appium"
-version = "1.2.1"
+version = "1.2.3"
 
 repositories {
     mavenCentral()
@@ -32,7 +32,7 @@ intellijPlatform {
             email = "support@mituultra.com"
         }
         ideaVersion {
-            sinceBuild = "251"
+            sinceBuild = "241"
         }
 
         description = """
