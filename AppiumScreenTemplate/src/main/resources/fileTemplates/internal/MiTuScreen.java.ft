@@ -1,9 +1,8 @@
 package ${PACKAGE_NAME};
 
 import com.dt.screens.base.BaseScreen;
+import com.dt.utils.MobileFindBy;
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.pagefactory.AndroidFindBy;
-import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -16,11 +15,13 @@ public class ${CLASS_NAME} extends BaseScreen {
         super(driver);
     }
 
-    // TODO: Update the resource-id below if the target element changes.
-    @AndroidFindBy(uiAutomator = "new UiSelector().resourceId(\"replaceWithElementId\")")
-    @iOSXCUITFindBy(accessibility = "replaceWithElementId")
+    //TODO: Cập nhật id bên dưới theo element cần sử dụng.
+    @MobileFindBy(id = "replaceWithElementId")
     public WebElement anyElement;
 
 
-    public boolean isDisplayed() { return anyElement.isDisplayed(); }
+    public boolean isDisplayed() {
+        try { return startButton.isDisplayed(); }
+        catch (Exception ignored) { return false; }
+    }
 }

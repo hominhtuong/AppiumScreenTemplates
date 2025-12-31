@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.mitu.appium"
-version = "1.2.0"
+version = "1.2.1"
 
 repositories {
     mavenCentral()
@@ -41,7 +41,7 @@ By entering a screen name, the plugin automatically creates corresponding screen
         """.trimIndent()
 
         changeNotes = """
-                <li>Add iOSXCUITFindBy</li> 
+                    <li>Add MobileFindBy to replace AndroidFindBy and iOSXCUITFindBy for simpler locator definition</li> 
         """.trimIndent()
     }
 }
